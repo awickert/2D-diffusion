@@ -13,9 +13,9 @@ K = D * dx / dt**2
 
 ncols = 51
 nrows = 51
-n = nx*ny
-T = np.zeros((nx, ny))
-T[nx//2, ny//2] = 1.
+n = nrows*ncols
+T = np.zeros((nrows, ncols))
+T[ncols//2, nrows//2] = 1.
 
 # A from Ax=b: Columns
 A_upper_right_columns = -K * np.ones(nrows)
