@@ -11,11 +11,11 @@ dx = 1.
 dt = 1.
 K = D * dx / dt**2
 
-ncols = 51
+ncols = 31
 nrows = 51
 n = nrows*ncols
 T = np.zeros((nrows, ncols))
-T[ncols//2, nrows//2] = 1.
+T[nrows//2, ncols//2] = 1.
 
 # A from Ax=b: Columns
 A_upper_right_columns = -K * np.ones(nrows)
@@ -48,7 +48,7 @@ while t < tmax:
     # Loop over columns:
     for j in range(ncols):
         B_RHSmatrix = T[:,j]
-        T[:,j] = spsolve(A_LHSmatrix_rows, B_RHSmatrix)
+        T[:,j] = spsolve(A_LHSmatrix_columns, B_RHSmatrix)
         
     # Loop over rows
     for i in range(nrows):
