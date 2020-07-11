@@ -83,7 +83,7 @@ void Adi::_update_rows(){
                             NULL, NULL );
         umfpack_di_free_symbolic( &Symbolic );
         umfpack_di_solve( UMFPACK_A, Ap_rows, Ai_rows, Ax_rows,
-                            _T, T[i],
+                            T[i], T[i],
                             Numeric,
                             NULL, NULL );
         //for (i = 0 ; i < ncols ; i++) printf ("x [%d] = %g\n", i, _T [i]) ;
@@ -94,7 +94,7 @@ void Adi::_update_rows(){
         }
         std::cout << "\n";
         //std::cout << "Test!" << ".\n";
-        //umfpack_di_free_numeric (&Numeric);
+        umfpack_di_free_numeric (&Numeric);
     }
 }
 
