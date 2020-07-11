@@ -139,24 +139,33 @@ void Adi::_set_A_matrix_column( uint16_t _column_index ){
 }
 
 void Adi::_update_columns(){
-  for (uint16_t j = 0; j<ncols; j++){
-      double _T[nrows];
-      for ( uint16_t i=0; i<nrows; i++ ){
-          _T[i] = T[i][j];
-      }
-      umfpack_di_symbolic( nrows, nrows, Ap_cols, Ai_cols, Ax_cols,
-                           &Symbolic,
-                           NULL, NULL );
-      umfpack_di_numeric( Ap_cols, Ai_cols, Ax_cols,
-                          Symbolic, &Numeric,
-                          NULL, NULL );
-      umfpack_di_free_symbolic( &Symbolic );
-      umfpack_di_solve( UMFPACK_A, Ap_cols, Ai_cols, Ax_cols,
-                          T[j], T[j],
-                          Numeric,
-                          NULL, NULL );
-      umfpack_di_free_numeric (&Numeric);
-  }
+    for (uint16_t j = 0; j<ncols; j++){
+        double _T[nrows];
+        // Pull values from different rows
+        for ( uint16_t i=0; i<nrows; i++ ){
+            _T[i] = T[i][j];
+            //std::cout << _T[i] << " ";
+        }
+        //std::cout << "\n";
+        umfpack_di_symbolic( nrows, nrows, Ap_cols, Ai_cols, Ax_cols,
+                             &Symbolic,
+                             NULL, NULL );
+        umfpack_di_numeric( Ap_cols, Ai_cols, Ax_cols,
+                            Symbolic, &Numeric,
+                            NULL, NULL );
+        umfpack_di_free_symbolic( &Symbolic );
+        umfpack_di_solve( UMFPACK_A, Ap_cols, Ai_cols, Ax_cols,
+                            _T, _T,
+                            Numeric,
+                            NULL, NULL );
+        umfpack_di_free_numeric (&Numeric);
+        // Reassign values to row in column
+        for ( uint16_t i=0; i<nrows; i++ ){
+            //std::cout << _T[i] << " ";
+            T[i][j] = _T[i];
+        }
+        //std::cout << "\n";
+    }
 }
 
 void Adi::update(){
