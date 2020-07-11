@@ -5,8 +5,8 @@
 #include <iostream>
 
 // Held const -- means that changes in fcn won't matter
-static const uint16_t nrows = 7;
-static const uint16_t ncols = 7;
+static const uint16_t nrows = 21;
+static const uint16_t ncols = 21;
 
 // Temperature: the array that gets modified over time
 static double T[nrows][ncols];
@@ -14,10 +14,12 @@ static double T[nrows][ncols];
 class Adi{
 
 public:
-    double K; // Lumped coefficient: diffusivity, space, time
     float t = 0; // Current time
     float t_max = 10.; // Time at end of run
-    float dt = 0.1; // Time step
+    float D = 1.; // Diffusivity
+    float dx = 1.; // Spatial step
+    float dt = 1.; // Time step
+    double K; // Lumped coefficient: diffusivity, space, time
 
     // Nonzero rows, top to bottom, for each column in the
     // sparse matrix A
@@ -43,8 +45,7 @@ public:
     Adi();
 
     // Functions
-    void initialize(uint16_t nrows = 7, uint16_t ncols = 7, float D = 1.,
-                    float dx = 1., float dt=0.1, float t_max=10.);
+    void initialize();
     void update();
     void run();
     void finalize();
