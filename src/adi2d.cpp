@@ -103,7 +103,24 @@ void Adi::set_A_matrix_column( uint16_t _column_index ){
 }
 
 void Adi::_update_columns(){
-
+  for (uint16_t j = 0; j<ncols; j++){
+      double _T[nrows];
+      for ( uint16_t i=0; i<nrows; i++ ){
+          _T[i] = T[i][j];
+      }
+      umfpack_di_symbolic( nrows, nrows, Ap_cols, Ai_cols, Ax_cols,
+                           &Symbolic,
+                           NULL, NULL );
+      umfpack_di_numeric( Ap_cols, Ai_cols, Ax_cols,
+                          Symbolic, &Numeric,
+                          NULL, NULL );
+      umfpack_di_free_symbolic( &Symbolic );
+      umfpack_di_solve( UMFPACK_A, Ap_cols, Ai_cols, Ax_cols,
+                          T[j], T[j],
+                          Numeric,
+                          NULL, NULL );
+      umfpack_di_free_numeric (&Numeric);
+  }
 }
 
 void Adi::update(){
