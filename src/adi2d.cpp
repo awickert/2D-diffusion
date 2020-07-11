@@ -2,17 +2,19 @@
 
 Adi::Adi(){}
 
-void Adi::initialize(uint16_t nrows, uint16_t ncols, float D, float dx, float dt, float t_max){
+void Adi::initialize(){
+    //uint16_t nrows, uint16_t ncols, float D, float dx, float dt, float t_max
     // Number of rows and columns
-    nrows = nrows;
-    ncols = ncols;
+    //nrows = nrows;
+    //ncols = ncols;
+    // Time step
+    //dt = dt;
     // Coefficient (constant); treated here as if dx = dy
     // otherwise would have two "K" variables
     K = D * dt / (dx*dx);
-    // Time step
-    dt = dt;
+    //std::cout << K << ".\n";
     // Maximum time at end of run
-    t_max = t_max;
+    //t_max = t_max;
     // T array
     for (uint16_t i = 0; i<ncols; i++){
         for (uint16_t j = 0; j<nrows; j++){
@@ -174,28 +176,33 @@ void Adi::update(){
 }
 
 void Adi::run(){
+    //std::cout << T[nrows/2][ncols/2] << ".\n";
     while( t < t_max ){
         update();
         t += dt;
+        //std::cout << T[nrows/2][ncols/2] << ".\n";
     }
 }
 
 void Adi::finalize(){
     //std::cout << T[nrows/2][ncols/2] << "\n";
     //std::cout << K << "\n";
+    /*
     for (int i=0; i<(nrows); i++){
         for (int j=0; j<(ncols); j++){
             std::cout << T[i][j] << " ";
         }
         std::cout << "\n";
     }
+    */
+    std::cout << T[nrows/2][ncols/2] << ".\n";
 }
 
 int main(){
-    std::cout << "Test!" << "\n";
+    //std::cout << "Test!" << "\n";
     Adi adi;
     adi.initialize();
-    adi.update();
+    //adi.update();
+    adi.run();
     adi.finalize();
-    //std::cout << T[nrows/2][ncols/2] << ".\n";
 }
