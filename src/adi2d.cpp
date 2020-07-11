@@ -1,25 +1,31 @@
 #include "adi2d.hpp"
 
-void initialize(uint8_t nrows, uint8_t ncols, float D, float dx, float dt, float t_max){
-    // Coefficient (constant)
-    K = D * dt / (dx*dx)
+Adi::Adi(){}
+
+void Adi::initialize(uint16_t nrows, uint16_t ncols, float D, float dx, float dt, float t_max){
+    // Coefficient (constant); treated here as if dx = dy
+    // otherwise would have two "K" variables
+    K = D * dt / (dx*dx);
+    // Time step
+    dt = dt;
+    // Maximum time at end of run
+    t_max = t_max;
     // T array
-    float T[nrows][ncols];
-    for (int i = 0; i<ncols; i++){
-        for (int j = 0; j<nrows; j++){
-            T[i,j] = 0.;
+    for (uint16_t i = 0; i<ncols; i++){
+        for (uint16_t j = 0; j<nrows; j++){
+            T[i][j] = 0.;
         }
     }
     // Initial high T in the center
-    T[i/2,j/2] = 1.
+    T[nrows/2][ncols/2] = 1.;
 
     // Array A for each row within array T
-    set_A_matrix_row()
+    set_A_matrix_row( 1 ); // Dummy index for now
     // and for each column
     //set_A_matrix_column()
 }
 
-void set_A_matrix_row( uint8_t _row_index ){
+void Adi::set_A_matrix_row( uint16_t _row_index ){
     // Rows within each column, in order
     // Two in first column
     Ai_rows[0] = 0;
@@ -41,6 +47,7 @@ void set_A_matrix_row( uint8_t _row_index ){
     Ap_rows[1] = 2;
     for (int i = 2; i<(ncols-1); i++){
         Ap_rows[i] = Ap_rows[i-1] + 3;
+    }
     Ap_rows[ncols] = Ap_rows[ncols-1] + 2;
 
     // And finally, we set the values within each of these rows.
@@ -50,57 +57,63 @@ void set_A_matrix_row( uint8_t _row_index ){
     // step, for every row and column.
     // Two elements in the first column
     Ax_rows[0] = 2*K+1;
-    Ai_rows[1] = -1*K;
+    Ax_rows[1] = -1*K;
     // Three for all intermediary ones
-    for (int i = 1; i<(ncols-1); i++){
-        Ai_rows[3*i-1] = -1*K; // upper
-        Ai_rows[3*i] = 2*K+1; // main diagonal
-        Ai_rows[3*i+1] = -1*K; // lower
+    for (uint32_t i = 1; i<(ncols-1); i++){
+        Ax_rows[3*i-1] = -1*K; // upper
+        Ax_rows[3*i] = 2*K+1; // main diagonal
+        Ax_rows[3*i+1] = -1*K; // lower
     }
     // Two at the end
-    Ai_rows[3*ncols-4] = -1*K;
-    Ai_rows[3*ncols-3] = 2*K+1;
+    Ax_rows[3*ncols-4] = -1*K;
+    Ax_rows[3*ncols-3] = 2*K+1;
 }
 
-void _update_rows(){
-    for i in range(nrows){
-        float* _T = T[i]
+void Adi::_update_rows(){
+    for (uint16_t i = 0; i<nrows; i++){
+        double* _T = T[i];
         umfpack_di_symbolic( ncols, ncols, Ap_rows, Ai_rows, Ax_rows,
                              &Symbolic,
-                             null, null );
+                             NULL, NULL );
         umfpack_di_numeric( Ap_rows, Ai_rows, Ax_rows,
                             Symbolic, &Numeric,
-                            null, null );
+                            NULL, NULL );
         umfpack_di_free_symbolic( &Symbolic );
         umfpack_di_solve( UMFPACK_A, Ap_rows, Ai_rows, Ax_rows,
                             T[i], T[i],
                             Numeric,
-                            null, null )
+                            NULL, NULL );
         umfpack_di_free_numeric (&Numeric);
     }
 }
 
-void set_A_matrix_column( uint8_t _column_index ){
-
-void _update_columns(){
+void Adi::set_A_matrix_column( uint16_t _column_index ){
 
 }
 
-void update(){
-    update_rows();
-    update_columns();
+void Adi::_update_columns(){
+
 }
 
-void run(){
+void Adi::update(){
+    _update_rows();
+    _update_columns();
+}
+
+void Adi::run(){
     while( t < t_max ){
         update();
+        t += dt;
     }
 }
 
-void finalize(){
-    cout << T[i/2,j/2] << ".\n";
+void Adi::finalize(){
+    std::cout << T[nrows/2][ncols/2] << ".\n";
 }
 
 int main(){
-  cout << "Test!" << ".\n";
+    std::cout << "Test!" << ".\n";
+    Adi adi;
+    adi.initialize();
+    adi.run();
 }
