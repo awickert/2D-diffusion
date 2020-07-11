@@ -1,7 +1,7 @@
 #ifndef ADI2D_HPP
 #define ADI2D_HPP
 
-#include <umfpack>
+#include <suitesparse/umfpack.h>
 #include <iostream>
 
 class adi{
