@@ -12,7 +12,7 @@ void initialize(uint8_t nrows, uint8_t ncols, float D, float dx, float dt, float
     }
     // Initial high T in the center
     T[i/2,j/2] = 1.
-    
+
     // Array A for each row within array T
     set_A_matrix_row()
     // and for each column
@@ -42,7 +42,7 @@ void set_A_matrix_row( uint8_t _row_index ){
     for (int i = 2; i<(ncols-1); i++){
         Ap_rows[i] = Ap_rows[i-1] + 3;
     Ap_rows[ncols] = Ap_rows[ncols-1] + 2;
-    
+
     // And finally, we set the values within each of these rows.
     // This solution is for uniform diffusivity, hence this need be done
     // only once. For TWSM, these values will need to be updated every time
@@ -100,4 +100,7 @@ void run(){
 void finalize(){
     cout << T[i/2,j/2] << ".\n";
 }
-    
+
+int main(){
+  cout << "Test!" << ".\n";
+}
