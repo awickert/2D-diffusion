@@ -4,8 +4,9 @@
 #include <suitesparse/umfpack.h>
 #include <iostream>
 
-static const uint16_t nrows = 21;
-static const uint16_t ncols = 21;
+// Held const -- means that changes in fcn won't matter
+static const uint16_t nrows = 7;
+static const uint16_t ncols = 7;
 
 // Temperature: the array that gets modified over time
 static double T[nrows][ncols];
@@ -42,8 +43,8 @@ public:
     Adi();
 
     // Functions
-    void initialize(uint16_t nrows = 21, uint16_t ncols = 21, float D = 1.,
-                    float dx = 1., float dt=1., float t_max=10.);
+    void initialize(uint16_t nrows = 7, uint16_t ncols = 7, float D = 1.,
+                    float dx = 1., float dt=0.1, float t_max=10.);
     void update();
     void run();
     void finalize();

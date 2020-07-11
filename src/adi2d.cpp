@@ -3,6 +3,9 @@
 Adi::Adi(){}
 
 void Adi::initialize(uint16_t nrows, uint16_t ncols, float D, float dx, float dt, float t_max){
+    // Number of rows and columns
+    nrows = nrows;
+    ncols = ncols;
     // Coefficient (constant); treated here as if dx = dy
     // otherwise would have two "K" variables
     K = D * dt / (dx*dx);
@@ -45,7 +48,7 @@ void Adi::set_A_matrix_row( uint16_t _row_index ){
     // Indices are (inclusive, exclusive)
     Ap_rows[0] = 0;
     Ap_rows[1] = 2;
-    for (int i = 2; i<(ncols-1); i++){
+    for (int i = 2; i<(ncols); i++){
         Ap_rows[i] = Ap_rows[i-1] + 3;
     }
     Ap_rows[ncols] = Ap_rows[ncols-1] + 2;
@@ -80,10 +83,18 @@ void Adi::_update_rows(){
                             NULL, NULL );
         umfpack_di_free_symbolic( &Symbolic );
         umfpack_di_solve( UMFPACK_A, Ap_rows, Ai_rows, Ax_rows,
-                            T[i], T[i],
+                            _T, T[i],
                             Numeric,
                             NULL, NULL );
-        umfpack_di_free_numeric (&Numeric);
+        //for (i = 0 ; i < ncols ; i++) printf ("x [%d] = %g\n", i, _T [i]) ;
+        for (int j=0; j<(ncols); j++){
+            //std::cout << T[i][j] << " ";
+            std::cout << _T[j] << " ";
+            //std::cout << Ap_rows[j] << " ";
+        }
+        std::cout << "\n";
+        //std::cout << "Test!" << ".\n";
+        //umfpack_di_free_numeric (&Numeric);
     }
 }
 
@@ -108,12 +119,15 @@ void Adi::run(){
 }
 
 void Adi::finalize(){
-    std::cout << T[nrows/2][ncols/2] << ".\n";
+    //std::cout << T[nrows/2][ncols/2] << "\n";
+    //std::cout << K << "\n";
 }
 
 int main(){
-    std::cout << "Test!" << ".\n";
+    std::cout << "Test!" << "\n";
     Adi adi;
     adi.initialize();
-    adi.run();
+    adi.update();
+    adi.finalize();
+    //std::cout << T[nrows/2][ncols/2] << ".\n";
 }
