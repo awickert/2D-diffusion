@@ -5,8 +5,8 @@
 #include <iostream>
 
 // Held const -- means that changes in fcn won't matter
-static const uint16_t nrows = 21;
-static const uint16_t ncols = 21;
+static const uint16_t nrows = 15;
+static const uint16_t ncols = 5;
 
 // Temperature: the array that gets modified over time
 static double T[nrows][ncols];
@@ -16,7 +16,7 @@ class Adi{
 public:
     float t = 0; // Current time
     float t_max = 10.; // Time at end of run
-    float D = 1.; // Diffusivity
+    float D = 0.1; // Diffusivity
     float dx = 1.; // Spatial step
     float dt = 1.; // Time step
     double K; // Lumped coefficient: diffusivity, space, time

@@ -187,14 +187,12 @@ void Adi::run(){
 void Adi::finalize(){
     //std::cout << T[nrows/2][ncols/2] << "\n";
     //std::cout << K << "\n";
-    /*
     for (int i=0; i<(nrows); i++){
         for (int j=0; j<(ncols); j++){
             std::cout << T[i][j] << " ";
         }
         std::cout << "\n";
     }
-    */
     std::cout << T[nrows/2][ncols/2] << ".\n";
 }
 
