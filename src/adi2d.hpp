@@ -50,8 +50,8 @@ public:
     void finalize();
 
 private:
-    void set_A_matrix_row( uint16_t _row_index );
-    void set_A_matrix_column( uint16_t _column_index );
+    void _set_A_matrix_row( uint16_t _row_index );
+    void _set_A_matrix_column( uint16_t _column_index );
     void _update_rows();
     void _update_columns();
 

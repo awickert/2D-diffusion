@@ -23,12 +23,14 @@ void Adi::initialize(uint16_t nrows, uint16_t ncols, float D, float dx, float dt
     T[nrows/2][ncols/2] = 1.;
 
     // Array A for each row within array T
-    set_A_matrix_row( 1 ); // Dummy index for now
+    _set_A_matrix_row( 1 ); // Dummy index for now
     // and for each column
-    //set_A_matrix_column()
+    _set_A_matrix_column( 1 ); // Dummy index for now
+    // Dummy index could be replaced with real row/column
+    // if needed to bring in spatially variable K (D)
 }
 
-void Adi::set_A_matrix_row( uint16_t _row_index ){
+void Adi::_set_A_matrix_row( uint16_t _row_index ){
     // Rows within each column, in order
     // Two in first column
     Ai_rows[0] = 0;
@@ -98,7 +100,49 @@ void Adi::_update_rows(){
     }
 }
 
-void Adi::set_A_matrix_column( uint16_t _column_index ){
+void Adi::_set_A_matrix_column( uint16_t _column_index ){
+
+  // Columns within each row, in order
+  // Two in first column
+  Ai_cols[0] = 0;
+  Ai_cols[1] = 1;
+  // Three for all intermediary ones
+  for (int i = 1; i<(nrows-1); i++){
+      Ai_cols[3*i-1] = i-1; // upper
+      Ai_cols[3*i] = i; // main diagonal
+      Ai_cols[3*i+1] = i+1; // lower
+  }
+  // Two at the end
+  Ai_cols[3*nrows-4] = nrows-2;
+  Ai_cols[3*nrows-3] = nrows-1;
+
+  // Pointers to rows in Ai within each column, in order
+  // Two rows in the first and last columns, three in the middle
+  // Indices are (inclusive, exclusive)
+  Ap_cols[0] = 0;
+  Ap_cols[1] = 2;
+  for (int i = 2; i<(nrows); i++){
+      Ap_cols[i] = Ap_cols[i-1] + 3;
+  }
+  Ap_cols[nrows] = Ap_cols[nrows-1] + 2;
+
+  // And finally, we set the values within each of these columns.
+  // This solution is for uniform diffusivity, hence this need be done
+  // only once. For TWSM, these values will need to be updated every time
+  // (Hence my passing _row_index but not using it)
+  // step, for every row and column.
+  // Two elements in the first column
+  Ax_cols[0] = 2*K+1;
+  Ax_cols[1] = -1*K;
+  // Three for all intermediary ones
+  for (uint32_t i = 1; i<(nrows-1); i++){
+      Ax_cols[3*i-1] = -1*K; // upper
+      Ax_cols[3*i] = 2*K+1; // main diagonal
+      Ax_cols[3*i+1] = -1*K; // lower
+  }
+  // Two at the end
+  Ax_cols[3*nrows-4] = -1*K;
+  Ax_cols[3*nrows-3] = 2*K+1;
 
 }
 
